@@ -10,12 +10,13 @@ function info() {
 echo 'BASHREDMOND pretty raw version #1'
 }
 
-function test() {
+function parse_param() {
 
 if [ "$params" != "1" ]
 	then
-		echo One parameter only please
+		echo ERR: One parameter only please
 	else
+	echo $params parameters passed \($target\)
 	for arg in $target
 	do
 		case $arg in all )
@@ -23,29 +24,49 @@ if [ "$params" != "1" ]
 		help )
 		echo here is a help file...good luck
 		echo "`cat help`" ;;
+		ping )
+		ping_hosts ;;
 		* )
-		echo "Checking hostname"
-			if [ `redis-cli $rdb sismember hostnames $target` = 1 ]
-			then
-			echo $target was found in the database
-			show_target
-			else
-			echo $target was NOT found in the database
-			fi ;;	
+		check_host ;;	
 		esac
 	done
 fi
-echo $params parameters passed \($target\)
-echo hostnames from db: $hostnames
+
 }
 
-#function test() {
-#if [ $# !-eq 1 ]
-#	then
-#	echo One parameter only please
-#else
-#}
+#ping all hostnames in the database
+function ping_hosts() {
+ms=0
+ping=1
+for host in $hostnames
+	do
+		echo pinging $host...
+		ms=`ping -c 2 $host|cut -sd '/' -f 5`
+		ping=$?
+		if [ $ping = 0 ]
+			then	
+	 			echo $ms ms to $host
+			else
+				echo Ping to $host failed!!!!
+		fi
+	done
+}
 
+
+#check parameter input against hostnames in DB 
+function check_host() {
+	echo "Checking hostname..."
+	if [ `redis-cli $rdb sismember hostnames $target` = 1 ]
+	then
+		echo $target was found in the database
+		show_target
+	else
+		echo $target was NOT found in the database
+		echo Currently listed hostnames: $hostnames
+	fi
+}
+
+#show all info for specified hostname
 function show_target() {
 echo '*************************************************************'
 echo `date`
@@ -60,6 +81,7 @@ echo 'minerd running?    :       '`redis-cli $rdb get "$target:minerd"`
 echo '*************************************************************'
 }
 
+#show a quick overview for every hostname found in the database
 function overview() {
 echo Database holds these hostnames: $hostnames
 echo '******'
@@ -76,15 +98,9 @@ done
 
 
 info
-test
+parse_param
 
 
 
-#if [ "$target" = "" ]
-#	then 
-#		overview
-#	else
-#		show_target
-#fi
-
+#END
 

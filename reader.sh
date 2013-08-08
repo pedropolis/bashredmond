@@ -7,7 +7,8 @@ params=$#
 hostnames=`redis-cli -h server3 smembers hostnames`
 
 function info() {
-echo 'BASHREDMOND pretty raw version #1'
+echo 'BASHREDMOND v0.1'
+echo localtime : `date +%H:%M:%S`
 }
 
 function parse_param() {
@@ -15,6 +16,7 @@ function parse_param() {
 if [ "$params" != "1" ]
 	then
 		echo ERR: One parameter only please
+		echo $params parameters received
 	else
 	echo $params parameters passed \($target\)
 	for arg in $target
@@ -69,13 +71,13 @@ function check_host() {
 #show all info for specified hostname
 function show_target() {
 echo '*************************************************************'
-echo `date`
 echo looking up $target ...
 echo '******'
-echo 'Uptime is          :       '`redis-cli $rdb get "$target:uptime"`
+echo 'Last Update        :       '`redis-cli $rdb get "$target:time"`
+echo 'Uptime             :       '`redis-cli $rdb get "$target:uptime"`
 echo 'Avg. Load          :       '`redis-cli $rdb get "$target:load"`
 echo 'CPU temp           :       '`redis-cli $rdb get "$target:temp"`
-echo 'ms to google       :       '`redis-cli $rdb get "$target:gping"`
+echo 'Ping to google     :       '`redis-cli $rdb get "$target:gping"`ms
 echo 'MPD running?       :       '`redis-cli $rdb get "$target:mpd"`
 echo 'minerd running?    :       '`redis-cli $rdb get "$target:minerd"`
 echo '*************************************************************'
@@ -88,6 +90,7 @@ echo '******'
 for host in $hostnames
 do
 echo $host
+echo 'Time  :  '`redis-cli $rdb get "$host:time"`
 echo 'Uptime:  '`redis-cli $rdb get "$host:uptime"`
 echo 'Load  :  '`redis-cli $rdb get "$host:load"`
 echo 'Temp  :  '`redis-cli $rdb get "$host:temp"`

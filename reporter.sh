@@ -32,7 +32,7 @@ if [ $mpd = 0 ]
 fi
 
 
-
+redis-cli -h server3 set "`hostname`:time" "`date +%D-%H:%M:%S`"
 redis-cli -h server3 set "`hostname`:uptime" "`uptime|cut -d "," -f 1,2|cut -d' ' -f 4-`"
 redis-cli -h server3 set "`hostname`:load" "`uptime|cut -d',' -f 4-|cut -b 17-`"
 redis-cli -h server3 set "`hostname`:temp" "`acpi -t|cut -d' ' -f 4`"

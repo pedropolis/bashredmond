@@ -1,0 +1,34 @@
+
+	BASH scripts for running REDis based MONitoring Daemon
+
+		A set of simple scripts for reporting and monitoring system information
+		on a local network. Not a replacement for realtime monioring but not 
+		a terrible substitute, better than logging in to each machine with ssh!
+
+		USAGE
+			reader.sh [arg]
+
+		EXAMPLES
+			reader.sh myhostname
+			reader.sh all
+			reader.sh ping
+			reader.sh help
+		
+		A single argument must be passed to the script, this may be:
+		help
+			Shows this help file
+
+		all
+			Shows brief vital statistics for all hostnames in the database
+
+		[hostname]
+			Shows all info collected for the given hostname 
+			(host is checked against the db first and rejected if there is no info)
+
+		ping
+			Pings each hostname in the db twice and returns the average ping time	
+			(useful to check which hosts are live and should be reporting)
+			
+
+
+

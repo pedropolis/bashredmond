@@ -29,10 +29,11 @@ minerd=$?
 if [ $minerd = 0 ]
 	then
 	redis-cli -h server3 set "`hostname`:minerd" yes
-	redis-cli -h server3 set "`hostname`:minerinfo" `ps `ps -C minerd|cut -b 1-5|grep ^....[0-9]`|grep ^....[0-9]|cut -d' ' -f 1,12,17`
+	redis-cli -h server3 set "`hostname`:minerinfo" "$(ps $(ps -C minerd|cut -b 1-5|grep ^....[0-9])|grep ^....[0-9]|cut -d' ' -f 1,12,17)"
+
 	else
 	redis-cli -h server3 set "`hostname`:minerd" no
-	redis-cli -h server3 set "`hostname`:minerinfo" 
+	redis-cli -h server3 set "`hostname`:minerinfo" ""
 
 fi
 #fetch a bunch of other info we want
